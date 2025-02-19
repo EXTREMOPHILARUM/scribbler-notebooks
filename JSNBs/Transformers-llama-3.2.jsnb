@@ -1,0 +1,20 @@
+{
+  "metadata": {
+    "name": "Scribbler Notebook",
+    "language_info": {
+      "name": "JavaScipt",
+      "version": "8.0"
+    }
+  },
+  "jsnbversion": "v0.1",
+  "cells": [
+    {
+      "code": "// Import the transformers.js library\nconst { pipeline } = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.3.3');\n\n// Check for WebGPU support\nconst device = navigator.gpu ? 'webgpu' : 'cpu';\n\n// Initialize the text generation pipeline with Llama 3.2\nconst generator = await pipeline('text-generation', 'Xenova/llama-3.2-1b-instruct', {\n  device: device,\n  quantized: false\n});\n\n// Define your prompt\nconst prompt = 'Explain the theory of relativity in simple terms.';\n\n// Generate text\nconst output = await generator(prompt, {\n  max_new_tokens: 100,\n  temperature: 0.7\n});\n\n// Display the generated text\nscrib.show(output.generated_text);\n",
+      "status": "[*]",
+      "output": "",
+      "type": "code"
+    }
+  ],
+  "source": "https://github.com/gopi-suvanam/scribbler",
+  "run_on_load": false
+}
