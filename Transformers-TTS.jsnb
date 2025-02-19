@@ -1,0 +1,32 @@
+{
+  "metadata": {
+    "name": "New JSNB",
+    "language_info": {
+      "name": "JavaScipt",
+      "version": "8.0"
+    }
+  },
+  "jsnbversion": "v0.1",
+  "cells": [
+    {
+      "code": "// Initialize the text-to-speech pipeline\nconst { pipeline } = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.3.3');\ntts = await pipeline('text-to-speech', 'Xenova/speecht5_tts', { quantized: false });",
+      "status": "[4]<br><span style=\"font-size:8px\">1.345s<span></span></span>",
+      "output": "",
+      "type": "code"
+    },
+    {
+      "code": "// URL for speaker embeddings\nspeaker_embeddings = 'https://huggingface.co/datasets/Xenova/transformers.js-docs/resolve/main/speaker_embeddings.bin';\n// Convert text to speech\ntext = 'Hello, this is a text-to-speech conversion using transformers.js in Scribbler.';\noutput = await tts(text, { speaker_embeddings });",
+      "status": "[5]<br><span style=\"font-size:8px\">7.863s<span></span></span>",
+      "output": "",
+      "type": "code"
+    },
+    {
+      "code": "// Access the audio data and sampling rate\naudioArray = output.audio;\nsamplingRate = output.sampling_rate;\n// Create an AudioContext\naudioContext = new (window.AudioContext || window.webkitAudioContext)();\n\n// Create an audio buffer\naudioBuffer = audioContext.createBuffer(1, audioArray.length, samplingRate);\naudioBuffer.copyToChannel(new Float32Array(audioArray), 0);\n\n// Create a buffer source\nsource = audioContext.createBufferSource();\nsource.buffer = audioBuffer;\nsource.connect(audioContext.destination);\n\n// Play the audio\nsource.start();",
+      "status": "[6]<br><span style=\"font-size:8px\">4ms<span></span></span>",
+      "output": "",
+      "type": "code"
+    }
+  ],
+  "source": "https://github.com/gopi-suvanam/scribbler",
+  "run_on_load": false
+}
