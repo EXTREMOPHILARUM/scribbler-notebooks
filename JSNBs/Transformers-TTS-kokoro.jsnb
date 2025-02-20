@@ -1,0 +1,32 @@
+{
+  "metadata": {
+    "name": "kokoro-tts",
+    "language_info": {
+      "name": "JavaScipt",
+      "version": "8.0"
+    }
+  },
+  "jsnbversion": "v0.1",
+  "cells": [
+    {
+      "code": "// Load the kokoro-js library\nconst { KokoroTTS } = await import('https://cdn.jsdelivr.net/npm/kokoro-js@1.2.0/dist/kokoro.web.js');\nmodelId = 'onnx-community/Kokoro-82M-v1.0-ONNX';\ntts = await KokoroTTS.from_pretrained(modelId, {\n    dtype: 'fp32', // Options: 'fp32', 'fp16', 'q8', 'q4', 'q4f16'\n    device: 'webgpu', // Options: 'wasm', 'webgpu'\n  });",
+      "status": "[11]<br><span style=\"font-size:8px\">9.984s<span></span></span>",
+      "output": "",
+      "type": "code"
+    },
+    {
+      "code": "https://www.npmjs.com/package/kokoro-js",
+      "status": "",
+      "output": "",
+      "type": "html"
+    },
+    {
+      "code": "text = \"Hello, this is a test of the Kokoro TTS model.\";\naudio = await tts.generate(text, {\n      voice: 'bf_alice', // Use tts.list_voices() to see all available voices\n  });\n// Play the generated audio\nconst audioBlob = new Blob([audio.toWav()], { type: 'audio/wav' });\nconst audioUrl = URL.createObjectURL(audioBlob);\nconst audioElement = new Audio(audioUrl);\naudioElement.play();",
+      "status": "[15]<br><span style=\"font-size:8px\">1.523s<span></span></span>",
+      "output": "",
+      "type": "code"
+    }
+  ],
+  "source": "https://github.com/gopi-suvanam/scribbler",
+  "run_on_load": false
+}
