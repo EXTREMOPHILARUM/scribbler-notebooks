@@ -15,27 +15,33 @@
       "type": "html"
     },
     {
-      "code": "const { AutoTokenizer, AutoModelForCausalLM } = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.3.3');\nconst modelId = 'HuggingFaceTB/SmolLM2-360M-Instruct';\ntokenizer = await AutoTokenizer.from_pretrained(modelId);\nmodel = await AutoModelForCausalLM.from_pretrained(modelId, {\n\tquantized: true, // Use the quantized model for better performance\n    device: 'webgpu', // Use 'webgpu' for GPU acceleration; fallback to 'wasm' if not supported\n  \tdtype: 'q4'\n\t});\n",
-      "status": "[5]<br><span style=\"font-size:8px\">11.914s<span></span></span>",
+      "code": "const { AutoTokenizer, AutoModelForSeq2SeqLM } = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.3.3');\n//const modelId = 'HuggingFaceTB/SmolLM2-360M-Instruct';\nmodelId = 'Xenova/t5-small'\ntokenizer = await AutoTokenizer.from_pretrained(modelId);\n//model = await AutoModelForCausalLM.from_pretrained(modelId, {\nmodel = await AutoModelForSeq2SeqLM.from_pretrained(modelId, {\n\n\tquantized: true, // Use the quantized model for better performance\n    device: 'webgpu', // Use 'webgpu' for GPU acceleration; fallback to 'wasm' if not supported\n  \t//dtype: 'q4'\n\t});\n",
+      "status": "[11]<br><span style=\"font-size:8px\">9.98s<span></span></span>",
       "output": "",
       "type": "code"
     },
     {
       "code": "if (!tokenizer || !model) {\n  console.error('Failed to initialize tokenizer or model.');\n  // Handle the error appropriately\n}",
-      "status": "[10]<br><span style=\"font-size:8px\">0ms<span></span></span>",
+      "status": "[12]<br><span style=\"font-size:8px\">0ms<span></span></span>",
       "output": "",
       "type": "code"
     },
     {
       "code": "const prompt = \"Write a 100-word article on the benefits of open-source in AI research.\";\n\n// Encode the input prompt\ninputIds = tokenizer.encode(prompt, { addSpecialTokens: true });\n\n// Check if encoding was successful\nscrib.show(inputIds)\nif (!inputIds) {\n  console.error('Tokenization failed. The input prompt may be invalid.');\n  // Handle the error appropriately\n}\n",
-      "status": "[13]<br><span style=\"font-size:8px\">1ms<span></span></span>",
-      "output": "[\n  19161,\n  253,\n  216,\n  33,\n  32,\n  32,\n  29,\n  3002,\n  2524,\n  335,\n  260,\n  2624,\n  282,\n  1440,\n  29,\n  7032,\n  281,\n  5646,\n  1151,\n  30\n] <br>",
+      "status": "[14]<br><span style=\"font-size:8px\">0ms<span></span></span>",
+      "output": "[\n  8733,\n  3,\n  9,\n  910,\n  18,\n  6051,\n  1108,\n  30,\n  8,\n  1393,\n  13,\n  539,\n  18,\n  7928,\n  16,\n  7833,\n  585,\n  5,\n  1\n] <br>",
       "type": "code"
     },
     {
-      "code": "// Generate text\nscrib.show(model)\nconst output = await model.generate(inputIds, {\n  maxLength: 100,\n  temperature: 0.7,\n  top_p: 0.9,\n  //do_sample: true,\n});\n\n// Check if generation was successful\nscrib.show(output)\nif (!output) {\n  console.error('Text generation failed.');\n  // Handle the error appropriately\n}\n\n// Decode the generated text\nconst generatedText = tokenizer.decode(output, { skipSpecialTokens: true });\nconsole.log('Generated text:', generatedText);\n",
+      "code": "// Generate text\nscrib.show(model)\nconst output = model.generate(inputIds);\n\n// Check if generation was successful\nscrib.show(output)\nif (!output) {\n  console.error('Text generation failed.');\n  // Handle the error appropriately\n}\n\n// Decode the generated text\nconst generatedText = tokenizer.decode(output, { skipSpecialTokens: true });\nconsole.log('Generated text:', generatedText);\n",
       "status": "[-]",
-      "output": "[object Function] <br><p class=\"error\">Cannot read properties of null (reading 'dims')</p>",
+      "output": "[object Function] <br>{} <br><p class=\"error\">token_ids must be a non-empty array of integers.</p>",
+      "type": "code"
+    },
+    {
+      "code": "const { AutoTokenizer, AutoModelForSeq2SeqLM } = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.3.3');\n\nlet tokenizer = await AutoTokenizer.from_pretrained('Xenova/t5-small');\nlet model = await AutoModelForSeq2SeqLM.from_pretrained('Xenova/t5-small');\n\nlet { input_ids } = await tokenizer('translate English to German: I love transformers!');\nlet outputs = await model.generate(input_ids);\nlet decoded = tokenizer.decode(outputs[0], { skip_special_tokens: true });\nscrib.show(decoded)",
+      "status": "[-]",
+      "output": "<p class=\"error\">An error occurred during model execution: \"Missing the following inputs: input_ids, attention_mask.</p>",
       "type": "code"
     }
   ],
