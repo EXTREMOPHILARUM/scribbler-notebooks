@@ -15,15 +15,21 @@
       "type": "html"
     },
     {
-      "code": "// Dynamically import the Transformers.js library\nconst { AutoProcessor, MultiModalityCausalLM } = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.3.3');\nconst modelId = 'onnx-community/Janus-Pro-1B-ONNX';\nprocessor = await AutoProcessor.from_pretrained(modelId);\nmodel = await MultiModalityCausalLM.from_pretrained(modelId, {\n\tquantized: true, // Use the quantized model for better performance\n    device: 'webgpu', // Use 'webgpu' for GPU acceleration; fallback to 'wasm' if not supported\n\t});\n",
-      "status": "[-]",
-      "output": "<p class=\"error\">Aborted(). Build with -sASSERTIONS for more info.</p>",
+      "code": "const { AutoTokenizer, AutoModelForCausalLM } = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.3.3');\nconst modelId = 'HuggingFaceTB/SmolLM2-360M-Instruct';\ntokenizer = await AutoTokenizer.from_pretrained(modelId);\nmodel = await AutoModelForCausalLM.from_pretrained(modelId, {\n\tquantized: true, // Use the quantized model for better performance\n    device: 'webgpu', // Use 'webgpu' for GPU acceleration; fallback to 'wasm' if not supported\n  \tdtype: 'q4'\n\t});\n",
+      "status": "[2]<br><span style=\"font-size:8px\">11.937s<span></span></span>",
+      "output": "",
       "type": "code"
     },
     {
-      "code": "    const conversation = [\n      {\n        role: '<|User|>',\n        content: textPrompt,\n      },\n    ];\n\n    // Process the inputs\n    const inputs = await processor(conversation, { chat_template: 'text_to_image' });\n\n    // Generate response\n    const numImageTokens = processor.num_image_tokens;\n    const outputs = await model.generate_images({\n      ...inputs,\n      min_new_tokens: numImageTokens,\n      max_new_tokens: numImageTokens,\n      do_sample: true,\n    });\n\n    // Display the generated image\n    const imageBlob = await outputs[0].toBlob();\n    const imageUrl = URL.createObjectURL(imageBlob);\n    const imgElement = document.createElement('img');\n    imgElement.src = imageUrl;",
+      "code": "",
       "status": "",
       "output": "",
+      "type": "code"
+    },
+    {
+      "code": "const prompt = \"Write a 100-word article on the benefits of open-source in AI research.\";\n\nconst inputIds = tokenizer.encode(prompt, { addSpecialTokens: true });\nconst output = await model.generate(inputIds, {\n\tmaxLength: 100, // Adjust the max length as needed\n    temperature: 0.7, // Adjust the temperature for creativity\n    top_p: 0.9, // Adjust the top_p for nucleus sampling\n    do_sample: true,\n  });\nconst generatedText = tokenizer.decode(output, { skipSpecialTokens: true });\nconsole.log('Generated text:', generatedText);",
+      "status": "[-]",
+      "output": "<p class=\"error\">Cannot read properties of null (reading 'dims')</p>",
       "type": "code"
     }
   ],
