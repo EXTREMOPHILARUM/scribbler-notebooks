@@ -16,20 +16,26 @@
     },
     {
       "code": "const { AutoTokenizer, AutoModelForCausalLM } = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.3.3');\nconst modelId = 'HuggingFaceTB/SmolLM2-360M-Instruct';\ntokenizer = await AutoTokenizer.from_pretrained(modelId);\nmodel = await AutoModelForCausalLM.from_pretrained(modelId, {\n\tquantized: true, // Use the quantized model for better performance\n    device: 'webgpu', // Use 'webgpu' for GPU acceleration; fallback to 'wasm' if not supported\n  \tdtype: 'q4'\n\t});\n",
-      "status": "[2]<br><span style=\"font-size:8px\">11.937s<span></span></span>",
+      "status": "[5]<br><span style=\"font-size:8px\">11.914s<span></span></span>",
       "output": "",
       "type": "code"
     },
     {
-      "code": "",
-      "status": "",
+      "code": "if (!tokenizer || !model) {\n  console.error('Failed to initialize tokenizer or model.');\n  // Handle the error appropriately\n}",
+      "status": "[10]<br><span style=\"font-size:8px\">0ms<span></span></span>",
       "output": "",
       "type": "code"
     },
     {
-      "code": "const prompt = \"Write a 100-word article on the benefits of open-source in AI research.\";\n\nconst inputIds = tokenizer.encode(prompt, { addSpecialTokens: true });\nconst output = await model.generate(inputIds, {\n\tmaxLength: 100, // Adjust the max length as needed\n    temperature: 0.7, // Adjust the temperature for creativity\n    top_p: 0.9, // Adjust the top_p for nucleus sampling\n    do_sample: true,\n  });\nconst generatedText = tokenizer.decode(output, { skipSpecialTokens: true });\nconsole.log('Generated text:', generatedText);",
+      "code": "const prompt = \"Write a 100-word article on the benefits of open-source in AI research.\";\n\n// Encode the input prompt\ninputIds = tokenizer.encode(prompt, { addSpecialTokens: true });\n\n// Check if encoding was successful\nscrib.show(inputIds)\nif (!inputIds) {\n  console.error('Tokenization failed. The input prompt may be invalid.');\n  // Handle the error appropriately\n}\n",
+      "status": "[13]<br><span style=\"font-size:8px\">1ms<span></span></span>",
+      "output": "[\n  19161,\n  253,\n  216,\n  33,\n  32,\n  32,\n  29,\n  3002,\n  2524,\n  335,\n  260,\n  2624,\n  282,\n  1440,\n  29,\n  7032,\n  281,\n  5646,\n  1151,\n  30\n] <br>",
+      "type": "code"
+    },
+    {
+      "code": "// Generate text\nscrib.show(model)\nconst output = await model.generate(inputIds, {\n  maxLength: 100,\n  temperature: 0.7,\n  top_p: 0.9,\n  //do_sample: true,\n});\n\n// Check if generation was successful\nscrib.show(output)\nif (!output) {\n  console.error('Text generation failed.');\n  // Handle the error appropriately\n}\n\n// Decode the generated text\nconst generatedText = tokenizer.decode(output, { skipSpecialTokens: true });\nconsole.log('Generated text:', generatedText);\n",
       "status": "[-]",
-      "output": "<p class=\"error\">Cannot read properties of null (reading 'dims')</p>",
+      "output": "[object Function] <br><p class=\"error\">Cannot read properties of null (reading 'dims')</p>",
       "type": "code"
     }
   ],
