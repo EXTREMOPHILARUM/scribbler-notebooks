@@ -1,0 +1,32 @@
+{
+  "metadata": {
+    "name": "DeepSeek R1 WebGPU",
+    "language_info": {
+      "name": "JavaScript",
+      "version": "8.0"
+    }
+  },
+  "jsnbversion": "v0.1",
+  "cells": [
+    {
+      "code": "// Import the transformers.js library\nconst { AutoTokenizer, AutoModelForCausalLM } = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.3.3');\n\n// Check for WebGPU support\nconst adapter = await navigator.gpu?.requestAdapter();\nif (!adapter) {\n  throw new Error(\"WebGPU is not supported (no adapter found)\");\n}\nconsole.log(\"WebGPU is supported!\");\n\n// Model ID - DeepSeek R1 model\nconst model_id = \"onnx-community/DeepSeek-R1-Distill-Qwen-1.5B-ONNX\";\n\n// Load tokenizer and model\nconsole.log(\"Loading model...\");\nconst tokenizer = await AutoTokenizer.from_pretrained(model_id);\nconst model = await AutoModelForCausalLM.from_pretrained(model_id, {\n  dtype: \"q4f16\",\n  device: \"webgpu\"\n});\n\n// Store in window for access across cells\nwindow.tokenizer = tokenizer;\nwindow.model = model;\n\nconsole.log(\"Model loaded successfully!\");",
+      "status": "[-]",
+      "output": "",
+      "type": "code"
+    },
+    {
+      "code": "// Define your prompt\nconst messages = [\n  { role: \"system\", content: \"You are DeepSeek R1, a helpful AI assistant that can think step by step.\" },\n  { role: \"user\", content: \"Explain the concept of quantum entanglement in simple terms.\" }\n];\n\n// Prepare input with chat template\nconst inputs = window.tokenizer.apply_chat_template(messages, {\n  add_generation_prompt: true,\n  return_dict: true\n});\n\n// Generate text\nconsole.log(\"Generating response...\");\nconst output = await window.model.generate({\n  ...inputs,\n  do_sample: false,\n  max_new_tokens: 1024\n});\n\n// Display the complete output\nconst decoded = window.tokenizer.batch_decode(output, {\n  skip_special_tokens: true\n});\n\nconsole.log(\"\\nRaw response:\");\nconsole.log(decoded);\n\n// Extract the response\nlet fullResponse = \"\";\nif (decoded && decoded.length > 0) {\n  fullResponse = decoded[0];\n  \n  // Extract just the assistant's response\n  const assistantMarker = \"assistant\\n\";\n  const assistantIndex = fullResponse.lastIndexOf(assistantMarker);\n  \n  if (assistantIndex !== -1) {\n    fullResponse = fullResponse.substring(assistantIndex + assistantMarker.length);\n  }\n  \n  // Look for thinking markers\n  const thinkingStartMarker = \"<think>\";\n  const thinkingEndMarker = \"</think>\";\n  \n  // Replace thinking sections with formatted versions\n  while (fullResponse.includes(thinkingStartMarker) && fullResponse.includes(thinkingEndMarker)) {\n    const thinkStart = fullResponse.indexOf(thinkingStartMarker);\n    const thinkEnd = fullResponse.indexOf(thinkingEndMarker, thinkStart);\n    \n    if (thinkStart !== -1 && thinkEnd !== -1) {\n      const thinkingContent = fullResponse.substring(\n        thinkStart + thinkingStartMarker.length,\n        thinkEnd\n      );\n      \n      // Replace the thinking section with a formatted version\n      const beforeThinking = fullResponse.substring(0, thinkStart);\n      const afterThinking = fullResponse.substring(thinkEnd + thinkingEndMarker.length);\n      \n      fullResponse = beforeThinking + \n                    \"\\n\\n[Thinking process: \" + thinkingContent.trim() + \"]\\n\\n\" + \n                    afterThinking;\n    } else {\n      break;\n    }\n  }\n}\n\n// Store in window for access in next cell\nwindow.fullResponse = fullResponse;\n\n// Display the formatted response\nconsole.log(\"\\nFormatted response:\");\nconsole.log(fullResponse);",
+      "status": "[-]",
+      "output": "",
+      "type": "code"
+    },
+    {
+      "code": "// Create a formatted HTML output for better readability\nconst formattedHTML = `<div style=\"font-family: system-ui; line-height: 1.5; padding: 1rem; max-width: 800px; margin: 0 auto;\">\n  <h3>DeepSeek R1 Response:</h3>\n  <div style=\"white-space: pre-wrap; background: #f5f5f5; padding: 1rem; border-radius: 8px; border: 1px solid #ddd;\">\n    ${window.fullResponse.replace(/\\[Thinking process: (.*?)\\]/gs, '<div style=\"background: #f8f8f8; padding: 0.75rem; border-radius: 6px; margin: 0.5rem 0; color: #666; font-style: italic; border-left: 3px solid #ccc;\"><strong>Thinking process:</strong><br>$1</div>').replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>')}\n  </div>\n</div>`;\n\n// Return the HTML to be displayed in the cell's output\nformattedHTML;",
+      "status": "[-]",
+      "output": "",
+      "type": "code"
+    }
+  ],
+  "source": "https://github.com/EXTREMOPHILARUM/scribbler-notebooks",
+  "run_on_load": false
+}
