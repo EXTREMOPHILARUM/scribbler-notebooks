@@ -21,7 +21,7 @@
       "type": "code"
     },
     {
-      "code": "// Create a formatted HTML output for better readability\nconst formattedHTML = `<div style=\"font-family: system-ui; line-height: 1.5; padding: 1rem; max-width: 800px; margin: 0 auto;\">\n  <h3>Response:</h3>\n  <div style=\"white-space: pre-wrap; background: #f5f5f5; padding: 1rem; border-radius: 8px; border: 1px solid #ddd;\">\n    ${window.assistantResponse.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>')}\n  </div>\n</div>`;\n\n// Display the HTML output\ndocument.body.innerHTML = formattedHTML;",
+      "code": "// Create a formatted HTML output for better readability\nconst formattedHTML = `<div style=\"font-family: system-ui; line-height: 1.5; padding: 1rem; max-width: 800px; margin: 0 auto;\">\n  <h3>Response:</h3>\n  <div style=\"white-space: pre-wrap; background: #f5f5f5; padding: 1rem; border-radius: 8px; border: 1px solid #ddd;\">\n    ${window.assistantResponse.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>')}\n  </div>\n</div>`;\n\n// Return the HTML to be displayed in the cell's output\nformattedHTML;",
       "status": "[-]",
       "output": "",
       "type": "code"
